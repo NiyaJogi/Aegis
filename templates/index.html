@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,6 +32,48 @@
             <h1>Security Dashboard</h1>
             <p>Authentication threat monitoring and analysis</p>
         </header>
+
+        <section class="upload-section">
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                class="upload-form"
+            >
+
+                <div>
+                    <h3>Analyze Authentication Log</h3>
+
+                    <p>
+                        Upload a Linux authentication log to scan for
+                        suspicious SSH activity.
+                    </p>
+                </div>
+
+                <div class="upload-controls">
+
+                    <input
+                        type="file"
+                        name="log_file"
+                        accept=".log,.txt"
+                        required
+                    >
+
+                    <button type="submit">
+                        Analyze Log
+                    </button>
+
+                </div>
+
+            </form>
+
+            {% if filename %}
+                <p class="current-file">
+                    Currently analyzing: {{ filename }}
+                </p>
+            {% endif %}
+
+        </section>
 
         <section class="stats">
 
@@ -95,7 +138,7 @@
 
                         <div>
                             <h3>{{ alert.ip }}</h3>
-                            <p>{{alert.attack_type}}</p>
+                            <p>{{ alert.attack_type }}</p>
                         </div>
 
                         <span
@@ -133,21 +176,19 @@
 
                     <div class="alert-reasons">
 
-                    <h4>Detection Evidence</h4>
+                        <h4>Detection Evidence</h4>
 
-                    <ul>
+                        <ul>
 
-                        {% for reason in alert.reasons %}
+                            {% for reason in alert.reasons %}
+                                <li>{{ reason }}</li>
+                            {% endfor %}
 
-                            <li>{{ reason }}</li>
+                        </ul>
 
-                        {% endfor %}
-
-                    </ul>
+                    </div>
 
                 </div>
-
-            </div>
 
             {% endfor %}
 
@@ -156,4 +197,5 @@
     </main>
 
 </body>
+
 </html>

@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from parser import parse_failed_attempts
 from analyzer import analyze_attempts
 from severity import calculate_severity, get_alert_reasons
+from attack_classifier import classify_attack
 
 app = Flask(__name__)
 
@@ -32,13 +33,20 @@ def dashboard():
                 time_span
             )
 
+            attack_type = classify_attack(
+                attempts,
+                usernames,
+                time_span
+            )
+
             alerts.append({
                 "ip": ip,
                 "attempts": len(attempts),
                 "usernames": usernames,
                 "time_span": time_span,
                 "severity": severity,
-                "reasons": reasons
+                "reasons": reasons,
+                "attack_type": attack_type
             })
 
     return render_template(

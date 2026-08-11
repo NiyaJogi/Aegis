@@ -1,0 +1,34 @@
+============================================================
+SECURITY ALERT
+============================================================
+Source IP: 192.168.1.15
+Failed Attempts: 3
+Targeted Accounts: admin, root
+Time Span: 16 seconds
+Severity: HIGH
+
+Summary:
+192.168.1.15 generated 3 failed SSH login attempts targeting admin, root within 16 seconds.
+
+Evidence:
+    May 20 09:01:45 myhost sshd[25643]: Failed password for invalid user admin from 192.168.1.15 port 45120 ssh2
+    May 20 09:01:50 myhost sshd[25644]: Failed password for invalid user root from 192.168.1.15 port 45121 ssh2
+    May 20 09:02:01 myhost sshd[25645]: Failed password for root from 192.168.1.15 port 45122 ssh2
+
+============================================================
+SECURITY ALERT
+============================================================
+Source IP: 172.16.0.2
+Failed Attempts: 3
+Targeted Accounts: admin, guest, root
+Time Span: 79 seconds
+Severity: HIGH
+
+Summary:
+172.16.0.2 generated 3 failed SSH login attempts targeting admin, guest, root within 79 seconds.
+
+Evidence:
+    May 20 09:05:21 myhost sshd[25651]: Failed password for user admin from 172.16.0.2 port 33345 ssh2
+    May 20 09:06:00 myhost sshd[25652]: Failed password for invalid user guest from 172.16.0.2 port 33346 ssh2
+    May 20 09:06:40 myhost sshd[25653]: Failed password for root from 172.16.0.2 port 33347 ssh2
+

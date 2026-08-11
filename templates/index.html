@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aegis Security Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>AEGIS</h2>
+
+        <nav>
+            <p class="active">Dashboard</p>
+            <p>Alerts</p>
+            <p>Reports</p>
+            <p>AI Analysis</p>
+        </nav>
+    </div>
+
+    <main class="main-content">
+
+        <header>
+            <h1>Security Dashboard</h1>
+            <p>Authentication threat monitoring and analysis</p>
+        </header>
+
+        <section class="stats">
+
+            <div class="stat-card">
+                <span>Active Alerts</span>
+                <h2>{{ alerts|length }}</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>High Severity</span>
+
+                <h2>
+                    {{
+                        alerts
+                        | selectattr("severity", "equalto", "HIGH")
+                        | list
+                        | length
+                    }}
+                </h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Medium Severity</span>
+
+                <h2>
+                    {{
+                        alerts
+                        | selectattr("severity", "equalto", "MEDIUM")
+                        | list
+                        | length
+                    }}
+                </h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Low Severity</span>
+
+                <h2>
+                    {{
+                        alerts
+                        | selectattr("severity", "equalto", "LOW")
+                        | list
+                        | length
+                    }}
+                </h2>
+            </div>
+
+        </section>
+
+        <section class="alerts-section">
+
+            <div class="section-header">
+                <h2>Security Alerts</h2>
+                <span>{{ alerts|length }} detected</span>
+            </div>
+
+            {% for alert in alerts %}
+
+                <div class="alert-card">
+
+                    <div class="alert-top">
+
+                        <div>
+                            <h3>{{ alert.ip }}</h3>
+                            <p>Suspicious SSH authentication activity</p>
+                        </div>
+
+                        <span
+                            class="severity {{ alert.severity|lower }}"
+                        >
+                            {{ alert.severity }}
+                        </span>
+
+                    </div>
+
+                    <div class="alert-details">
+
+                        <div>
+                            <span>Failed Attempts</span>
+                            <strong>{{ alert.attempts }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Targeted Accounts</span>
+
+                            <strong>
+                                {{ alert.usernames | join(", ") }}
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Time Span</span>
+
+                            <strong>
+                                {{ "%.0f"|format(alert.time_span) }} sec
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="alert-reasons">
+
+                    <h4>Detection Evidence</h4>
+
+                    <ul>
+
+                        {% for reason in alert.reasons %}
+
+                            <li>{{ reason }}</li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</body>
+</html>

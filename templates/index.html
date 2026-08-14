@@ -15,7 +15,10 @@
 
 <body>
 
+    <!-- SIDEBAR -->
+
     <div class="sidebar">
+
         <h2>AEGIS</h2>
 
         <nav>
@@ -24,7 +27,11 @@
             <p>Reports</p>
             <p>AI Analysis</p>
         </nav>
+
     </div>
+
+
+    <!-- MAIN CONTENT -->
 
     <main class="main-content">
 
@@ -32,6 +39,9 @@
             <h1>Security Dashboard</h1>
             <p>Authentication threat monitoring and analysis</p>
         </header>
+
+
+        <!-- LOG FILE UPLOAD -->
 
         <section class="upload-section">
 
@@ -41,14 +51,23 @@
                 class="upload-form"
             >
 
+                <input
+                    type="hidden"
+                    name="action"
+                    value="upload"
+                >
+
                 <div>
+
                     <h3>Analyze Authentication Log</h3>
 
                     <p>
                         Upload a Linux authentication log to scan for
                         suspicious SSH activity.
                     </p>
+
                 </div>
+
 
                 <div class="upload-controls">
 
@@ -67,22 +86,40 @@
 
             </form>
 
+
             {% if filename %}
+
                 <p class="current-file">
                     Currently analyzing: {{ filename }}
                 </p>
+
             {% endif %}
 
         </section>
 
+
+        <!-- DASHBOARD STATISTICS -->
+
         <section class="stats">
 
-            <div class="stat-card">
-                <span>Active Alerts</span>
-                <h2>{{ alerts|length }}</h2>
-            </div>
+
+            <!-- ACTIVE ALERTS -->
 
             <div class="stat-card">
+
+                <span>Active Alerts</span>
+
+                <h2>
+                    {{ alerts|length }}
+                </h2>
+
+            </div>
+
+
+            <!-- HIGH SEVERITY -->
+
+            <div class="stat-card">
+
                 <span>High Severity</span>
 
                 <h2>
@@ -93,9 +130,14 @@
                         | length
                     }}
                 </h2>
+
             </div>
 
+
+            <!-- MEDIUM SEVERITY -->
+
             <div class="stat-card">
+
                 <span>Medium Severity</span>
 
                 <h2>
@@ -106,9 +148,14 @@
                         | length
                     }}
                 </h2>
+
             </div>
 
+
+            <!-- LOW SEVERITY -->
+
             <div class="stat-card">
+
                 <span>Low Severity</span>
 
                 <h2>
@@ -119,27 +166,53 @@
                         | length
                     }}
                 </h2>
+
             </div>
 
         </section>
 
+
+        <!-- SECURITY ALERTS -->
+
         <section class="alerts-section">
 
             <div class="section-header">
+
                 <h2>Security Alerts</h2>
-                <span>{{ alerts|length }} detected</span>
+
+                <span>
+                    {{ alerts|length }} detected
+                </span>
+
             </div>
+
+
+            <!-- LOOP THROUGH ALERTS -->
 
             {% for alert in alerts %}
 
+
+                <!-- INDIVIDUAL ALERT CARD -->
+
                 <div class="alert-card">
+
+
+                    <!-- ALERT HEADER -->
 
                     <div class="alert-top">
 
                         <div>
-                            <h3>{{ alert.ip }}</h3>
-                            <p>{{ alert.attack_type }}</p>
+
+                            <h3>
+                                {{ alert.ip }}
+                            </h3>
+
+                            <p>
+                                {{ alert.attack_type }}
+                            </p>
+
                         </div>
+
 
                         <span
                             class="severity {{ alert.severity|lower }}"
@@ -149,42 +222,134 @@
 
                     </div>
 
+
+                    <!-- ALERT DETAILS -->
+
                     <div class="alert-details">
 
-                        <div>
-                            <span>Failed Attempts</span>
-                            <strong>{{ alert.attempts }}</strong>
-                        </div>
+
+                        <!-- FAILED ATTEMPTS -->
 
                         <div>
-                            <span>Targeted Accounts</span>
+
+                            <span>
+                                Failed Attempts
+                            </span>
+
+                            <strong>
+                                {{ alert.attempts }}
+                            </strong>
+
+                        </div>
+
+
+                        <!-- TARGETED ACCOUNTS -->
+
+                        <div>
+
+                            <span>
+                                Targeted Accounts
+                            </span>
 
                             <strong>
                                 {{ alert.usernames | join(", ") }}
                             </strong>
+
                         </div>
 
+
+                        <!-- TIME SPAN -->
+
                         <div>
-                            <span>Time Span</span>
+
+                            <span>
+                                Time Span
+                            </span>
 
                             <strong>
                                 {{ "%.0f"|format(alert.time_span) }} sec
                             </strong>
+
                         </div>
 
                     </div>
 
+
+                    <!-- DETECTION EVIDENCE -->
+
                     <div class="alert-reasons">
 
-                        <h4>Detection Evidence</h4>
+                        <h4>
+                            Detection Evidence
+                        </h4>
 
                         <ul>
 
                             {% for reason in alert.reasons %}
-                                <li>{{ reason }}</li>
+
+                                <li>
+                                    {{ reason }}
+                                </li>
+
                             {% endfor %}
 
                         </ul>
+
+                    </div>
+
+
+                    <!-- AI SECURITY COPILOT -->
+
+                    <div class="ai-section">
+
+
+                        <!-- GENERATE AI ANALYSIS BUTTON -->
+
+                        <form method="POST">
+
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="ai"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="alert_ip"
+                                value="{{ alert.ip }}"
+                            >
+
+                            <input
+                                type="hidden"
+                                name="filename"
+                                value="{{ filename }}"
+                            >
+
+                            <button
+                                type="submit"
+                                class="ai-button"
+                            >
+                                Generate AI Analysis
+                            </button>
+
+                        </form>
+
+
+                        <!-- DISPLAY AI RESPONSE -->
+
+                        {% if alert.ai_analysis %}
+
+                            <div class="ai-analysis">
+
+                                <h4>
+                                    AI Security Copilot
+                                </h4>
+
+                                <pre>{{ alert.ai_analysis }}</pre>
+
+                            </div>
+
+                        {% endif %}
 
                     </div>
 

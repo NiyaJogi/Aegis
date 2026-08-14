@@ -5,6 +5,7 @@ from parser import parse_failed_attempts
 from analyzer import analyze_attempts
 from severity import calculate_severity, get_alert_reasons
 from attack_classifier import classify_attack
+from ai_copilot import analyze_security_alert
 
 
 app = Flask(__name__)
@@ -51,7 +52,8 @@ def build_alerts(log_file):
                 "time_span": time_span,
                 "severity": severity,
                 "reasons": reasons,
-                "attack_type": attack_type
+                "attack_type": attack_type,
+                "ai_analysis": None
             })
 
     return alerts
@@ -59,33 +61,56 @@ def build_alerts(log_file):
 
 @app.route("/", methods=["GET", "POST"])
 def dashboard():
+    filename = request.form.get("filename") or "auth.log"
 
-    alerts = []
-    filename = None
+    log_file = os.path.join(
+        UPLOAD_FOLDER,
+        filename
+    )
 
     if request.method == "POST":
 
-        uploaded_file = request.files.get("log_file")
+        action = request.form.get("action")
 
-        if uploaded_file and uploaded_file.filename:
+        if action == "upload":
 
-            filename = uploaded_file.filename
+            uploaded_file = request.files.get("log_file")
 
-            file_path = os.path.join(
-                UPLOAD_FOLDER,
-                filename
-            )
+            if uploaded_file and uploaded_file.filename:
 
-            uploaded_file.save(file_path)
+                filename = uploaded_file.filename
 
-            alerts = build_alerts(file_path)
+                log_file = os.path.join(
+                    UPLOAD_FOLDER,
+                    filename
+                )
+
+                uploaded_file.save(log_file)
+
+        alerts = build_alerts(log_file)
+
+        if action == "ai":
+
+            selected_ip = request.form.get("alert_ip")
+
+            for alert in alerts:
+
+                if alert["ip"] == selected_ip:
+
+                    alert["ai_analysis"] = analyze_security_alert(
+                        ip=alert["ip"],
+                        attack_type=alert["attack_type"],
+                        severity=alert["severity"],
+                        attempts=alert["attempts"],
+                        usernames=alert["usernames"],
+                        time_span=alert["time_span"],
+                        reasons=alert["reasons"]
+                    )
+
+                    break
 
     else:
-        default_file = "sample_logs/auth.log"
-
-        if os.path.exists(default_file):
-            alerts = build_alerts(default_file)
-            filename = "auth.log"
+        alerts = build_alerts(log_file)
 
     return render_template(
         "index.html",

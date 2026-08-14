@@ -6,6 +6,7 @@ from analyzer import analyze_attempts
 from severity import calculate_severity, get_alert_reasons
 from attack_classifier import classify_attack
 from ai_copilot import analyze_security_alert
+from mitre_mapping import get_mitre_mapping
 
 
 app = Flask(__name__)
@@ -45,6 +46,8 @@ def build_alerts(log_file):
                 time_span
             )
 
+            mitre = get_mitre_mapping(attack_type)
+
             alerts.append({
                 "ip": ip,
                 "attempts": len(attempts),
@@ -53,6 +56,7 @@ def build_alerts(log_file):
                 "severity": severity,
                 "reasons": reasons,
                 "attack_type": attack_type,
+                "mitre": mitre,
                 "ai_analysis": None
             })
 

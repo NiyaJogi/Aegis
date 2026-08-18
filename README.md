@@ -2,6 +2,16 @@
 
 Aegis is an AI-assisted security investigation platform that analyzes Linux authentication logs, detects suspicious SSH activity, classifies attack patterns, maps findings to MITRE ATT&CK, and provides analyst-focused AI security assessments through a Flask dashboard.
 
+## Screenshots
+
+### Security Dashboard
+
+![Aegis Security Dashboard](screenshots/dashboard.png)
+
+### AI Security Copilot
+
+![Aegis AI Security Copilot](screenshots/ai-copilot.png)
+
 ## Overview
 
 Security analysts often need to review large volumes of authentication logs to identify suspicious behavior and determine which alerts deserve investigation.
